@@ -1,9 +1,8 @@
-
 import manager.BookingManager;
-import model.Patient;
-import model.Physiotherapist;
-import model.Treatment;
-import model.AppointmentStatus;
+import model.*;
+
+import java.time.format.DateTimeFormatter;
+
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -14,37 +13,42 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to Boost Physio Booking System!");
 
-       // BookingManager manager = new BookingManager();
         BookingManager manager = BookingManager.getInstance();
 
-        // --- Add sample patients ---
+        // Create a list of expertise for Helen Wright
+        List<String> exp1 = Arrays.asList("Physiotherapy", "Rehabilitation");
+        // Create a new Physiotherapist for Helen Wright
+        Physiotherapist helen = new Physiotherapist("PT001", "Helen Wright", "1 Clinic Road", "07000000001", exp1);
+
+        // Create a list of expertise for Mark Lee
+        List<String> exp2 = Arrays.asList("Osteopathy", "Massage");
+        // Create a new Physiotherapist for Mark Lee
+        Physiotherapist mark = new Physiotherapist("PT002", "Mark Lee", "2 Clinic Road", "07000000002", exp2);
+
+        // Create a list of expertise for Sara Green
+        List<String> exp3 = Arrays.asList("Physiotherapy", "Pool rehabilitation");
+        // Create a new Physiotherapist for Sara Green
+        Physiotherapist sara = new Physiotherapist("PT003", "Sara Green", "3 Clinic Road", "07000000003", exp3);
+
+        // --- Add treatments for each physiotherapist ---
+        helen.addTreatment(new Treatment("Neural mobilisation", LocalDateTime.of(2025, 1, 3, 10, 0), helen, generateBookingId()));
+        helen.addTreatment(new Treatment("Acupuncture", LocalDateTime.of(2025, 1, 10, 14, 0), helen, generateBookingId()));
+        mark.addTreatment(new Treatment("Massage", LocalDateTime.of(2025, 1, 5, 11, 0), mark, generateBookingId()));
+        mark.addTreatment(new Treatment("Mobilisation of spine", LocalDateTime.of(2025, 1, 15, 16, 0), mark, generateBookingId()));
+        sara.addTreatment(new Treatment("Pool rehabilitation", LocalDateTime.of(2025, 1, 8, 9, 0), sara, generateBookingId()));
+        sara.addTreatment(new Treatment("Physiotherapy", LocalDateTime.of(2025, 1, 22, 13, 0), sara, generateBookingId()));
+
+        // --- Register physiotherapists with the system ---
+        manager.addPhysiotherapist(helen);
+        manager.addPhysiotherapist(mark);
+        manager.addPhysiotherapist(sara);
+
+        // Add sample patients
         manager.addPatient(new Patient("P001", "Alice Smith", "10 Baker Street", "07123456789"));
         manager.addPatient(new Patient("P002", "Bob Johnson", "22 King’s Road", "07234567890"));
         manager.addPatient(new Patient("P003", "Charlie Evans", "33 Queen’s Ave", "07345678901"));
         manager.addPatient(new Patient("P004", "Diana Moore", "44 Elm Street", "07456789012"));
         manager.addPatient(new Patient("P005", "Ethan Brown", "55 Oak Lane", "07567890123"));
-
-        // --- Add sample physiotherapists ---
-        List<String> exp1 = Arrays.asList("Physiotherapy", "Rehabilitation");
-        List<String> exp2 = Arrays.asList("Osteopathy", "Massage");
-        List<String> exp3 = Arrays.asList("Physiotherapy", "Pool rehabilitation");
-
-        Physiotherapist helen = new Physiotherapist("PT001", "Helen Wright", "1 Clinic Road", "07000000001", exp1);
-        Physiotherapist mark = new Physiotherapist("PT002", "Mark Lee", "2 Clinic Road", "07000000002", exp2);
-        Physiotherapist sara = new Physiotherapist("PT003", "Sara Green", "3 Clinic Road", "07000000003", exp3);
-
-        // --- Add sample treatments for January ---
-        helen.addTreatment(new Treatment("Neural mobilisation", LocalDateTime.of(2025, 1, 3, 10, 0), helen));
-        helen.addTreatment(new Treatment("Acupuncture", LocalDateTime.of(2025, 1, 10, 14, 0), helen));
-        mark.addTreatment(new Treatment("Massage", LocalDateTime.of(2025, 1, 5, 11, 0), mark));
-        mark.addTreatment(new Treatment("Mobilisation of spine", LocalDateTime.of(2025, 1, 15, 16, 0), mark));
-        sara.addTreatment(new Treatment("Pool rehabilitation", LocalDateTime.of(2025, 1, 8, 9, 0), sara));
-        sara.addTreatment(new Treatment("Physiotherapy", LocalDateTime.of(2025, 1, 22, 13, 0), sara));
-
-        // --- Register physios with the system ---
-        manager.addPhysiotherapist(helen);
-        manager.addPhysiotherapist(mark);
-        manager.addPhysiotherapist(sara);
 
         // --- Confirm it worked ---
         System.out.println("\n--- Registered Patients ---");
@@ -243,45 +247,38 @@ public class Main {
                     String action = scanner.nextLine().trim().toLowerCase();
 
                     if (action.equals("c") || action.equals("cancel")) {
-                        oldTreatment.cancel();
-                        manager.getCanceledTreatments().add(oldTreatment); // Add to canceled list
-                        System.out.println("Canceled treatment added: " + oldTreatment.getName()); // Debug log
-                        System.out.println("Appointment cancelled successfully.");                    } else if (action.equals("change")) {
-                        oldTreatment.cancel();
-                        System.out.println("Select a new treatment by physiotherapist’s name.");
-                        // Reuse logic from case 5 to book a new treatment
-                        System.out.print("Enter physiotherapist name: ");
-                        String newPtName = scanner.nextLine();
-                        Physiotherapist newPt = manager.findPhysiotherapistByName(newPtName);
-                        if (newPt == null) {
-                            System.out.println("Physiotherapist not found.");
-                            break;
-                        }
+                        // Ensure the patient is not null before calling getName()
+                        if (oldTreatment.getPatient() != null) {
+                            String patientName = oldTreatment.getPatient().getName(); // Store it before canceling
+                            oldTreatment.cancel(pUser);  // Pass the patient who is canceling the treatment
+                            oldTreatment.setStatus(AppointmentStatus.AVAILABLE);  // Release the appointment
 
-                        List<Treatment> newOptions = new ArrayList<>();
-                        for (Treatment t : newPt.getTreatments()) {
-                            if (t.getStatus() == AppointmentStatus.AVAILABLE) {
-                                newOptions.add(t);
-                            }
-                        }
-
-                        if (newOptions.isEmpty()) {
-                            System.out.println("No available treatments.");
-                            break;
-                        }
-
-                        for (int i = 0; i < newOptions.size(); i++) {
-                            System.out.println((i + 1) + ". " + newOptions.get(i));
-                        }
-
-                        System.out.print("Select a new treatment: ");
-                        int newIndex = Integer.parseInt(scanner.nextLine()) - 1;
-                        if (newIndex >= 0 && newIndex < newOptions.size()) {
-                            newOptions.get(newIndex).book(pUser);
-                            System.out.println("Treatment changed successfully.");
+                            CanceledTreatmentRecord canceled = new CanceledTreatmentRecord(
+                                    oldTreatment.getName(),
+                                    oldTreatment.getPhysiotherapist().getName(),
+                                    patientName,  // Use the stored name
+                                    pUser.getName(),
+                                    oldTreatment.getDateTime()
+                            );
+                            manager.getCanceledTreatments().add(canceled);
+                            System.out.println("Booking canceled for " + patientName);  // <-- Your custom message
                         } else {
-                            System.out.println("Invalid selection.");
+                            System.out.println("Unable to cancel the treatment: No patient associated.");
                         }
+                    }
+
+                    else if (action.equals("change")) {
+                        oldTreatment.cancel(pUser);
+                        CanceledTreatmentRecord canceled = new CanceledTreatmentRecord(
+                                oldTreatment.getName(),
+                                oldTreatment.getPhysiotherapist().getName(),
+                                oldTreatment.getPatient() != null ? oldTreatment.getPatient().getName() : "N/A",  // Avoid null pointer
+                                pUser.getName(),
+                                oldTreatment.getDateTime()
+                        );
+                        manager.getCanceledTreatments().add(canceled);
+
+                        // Proceed with re-booking logic...
                     } else {
                         System.out.println("Invalid action.");
                     }
@@ -330,16 +327,21 @@ public class Main {
                 case 9:
                     System.out.println("\n--- Final Report ---");
 
+                    // Map to track the number of attended treatments per physiotherapist
                     Map<Physiotherapist, Integer> attendanceCount = new HashMap<>();
 
+                    // Loop through all physiotherapists
                     for (Physiotherapist physio : manager.getAllPhysiotherapists()) {
                         System.out.println("\nPhysiotherapist: " + physio.getName());
 
+                        // Loop through all treatments of the physiotherapist
                         for (Treatment t : physio.getTreatments()) {
-                            // Display all treatments
+                            // Skip the canceled treatments for the final report
+
+                            // Display treatment details
                             String patientName = (t.getPatient() != null) ? t.getPatient().getName() : "N/A";
                             System.out.printf("  → %-30s | Patient: %-20s | Time: %-20s | Status: %s\n",
-                                    t.getName(), patientName, t.getDateTime(), t.getStatus());
+                                    t.getName(), patientName, t.getDateTime(), t.getStatus().toString());
 
                             // Count only attended treatments for ranking
                             if (t.getStatus() == AppointmentStatus.ATTENDED) {
@@ -348,20 +350,24 @@ public class Main {
                         }
                     }
 
-                    // Sort and display physiotherapists by number of attended appointments
+                    // Sort and display physiotherapists by the number of attended treatments
                     System.out.println("\n--- Ranking by Attended Appointments ---");
                     attendanceCount.entrySet().stream()
-                            .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-                            .forEach(entry -> System.out.printf("%-20s → %d attended\n",
-                                    entry.getKey().getName(), entry.getValue()));
+                            .sorted((a, b) -> b.getValue().compareTo(a.getValue()))  // Sort descending
+                            .forEach(entry -> System.out.printf("%-20s → %d attended\n", entry.getKey().getName(), entry.getValue()));
 
                     // Display canceled treatments in a separate section
                     System.out.println("\n--- Canceled Treatments ---");
-                    for (Treatment t : manager.getCanceledTreatments()) {
-                        String physioName = t.getPhysiotherapist().getName();
-                        String patientName = (t.getPatient() != null) ? t.getPatient().getName() : "N/A";
-                        System.out.printf("  → %-30s | Physio: %-20s | Patient: %-20s | Time: %-20s | Status: %s\n",
-                                t.getName(), physioName, patientName, t.getDateTime(), t.getStatus());
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+                    for (CanceledTreatmentRecord record : manager.getCanceledTreatments()) {
+                        System.out.printf("  → %-30s | Physio: %-20s | Originally Booked By: %-20s | Cancelled By: %-20s | When: %s\n",
+                                record.getTreatmentName(),
+                                record.getPhysiotherapistName(),
+                                record.getPatientName(),
+                                record.getCanceledBy(),
+                                record.getTime().format(formatter)
+                        );
                     }
                     break;
                 case 0:
@@ -372,5 +378,9 @@ public class Main {
 
             }
         }
+    }
+    // Method to generate unique booking ID
+    public static String generateBookingId() {
+        return UUID.randomUUID().toString();  // This generates a unique ID based on UUID
     }
 }
