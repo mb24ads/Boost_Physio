@@ -204,6 +204,7 @@ public class BookingManager {
 
  */
         System.out.println("\n--- Canceled Treatments ---");
+
         for (CanceledTreatmentRecord record : canceledTreatments) {
             System.out.println("  → " + record.getTreatmentName()
                     + " | Physio: " + record.getPhysiotherapistName()

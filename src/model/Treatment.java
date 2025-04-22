@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Treatment {
     private String name;
@@ -78,8 +79,49 @@ public class Treatment {
     }
 
     // toString method for treatment details
+  //  @Override
+  //  public String toString() {
+  //      return String.format("%s at %s [%s] by %s (Booking ID: %s)", name, dateTime, status, physiotherapist.getName(), bookingId);
+  //  }
+
+
     @Override
     public String toString() {
-        return String.format("%s at %s [%s] by %s (Booking ID: %s)", name, dateTime, status, physiotherapist.getName(), bookingId);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        String startTime = dateTime.format(timeFormatter);
+        String endTime = dateTime.plusHours(1).format(timeFormatter); // Assuming 1-hour treatment
+        String formattedDate = dateTime.format(dateFormatter);
+
+        // Define status symbols
+        String statusSymbol = "";
+        switch (status) {
+            case AVAILABLE:
+                statusSymbol = "🟢 AVAILABLE";
+                break;
+            case BOOKED:
+                statusSymbol = "🔵 BOOKED";
+                break;
+            case CANCELLED:
+                statusSymbol = "🔴 CANCELLED";
+                break;
+            case ATTENDED:
+                statusSymbol = "🟡 ATTENDED";
+                break;
+            default:
+                statusSymbol = "❓ Unknown";
+        }
+
+        return String.format("%s - %s, %s-%s [%s] by %s (Booking ID: %s)",
+                statusSymbol,
+                name,
+                formattedDate,
+                startTime,
+                endTime,
+                status,
+                physiotherapist.getName(),
+                bookingId
+        );
     }
 }
