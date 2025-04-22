@@ -14,6 +14,7 @@ public class BookingManager {
     //private List<Treatment> canceledTreatments; // To track canceled treatments
     private List<CanceledTreatmentRecord> canceledTreatments;
 
+
     private BookingManager() {
         patients = new HashMap<>();
         physiotherapists = new HashMap<>();

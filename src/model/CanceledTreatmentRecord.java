@@ -32,6 +32,7 @@ public class CanceledTreatmentRecord {
         return originalPatientName;
     }
 
+
     public String getCanceledBy() {
         return cancelledByName;
     }

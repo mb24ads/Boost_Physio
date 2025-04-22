@@ -94,6 +94,7 @@ public class Treatment {
         String endTime = dateTime.plusHours(1).format(timeFormatter); // Assuming 1-hour treatment
         String formattedDate = dateTime.format(dateFormatter);
 
+
         // Define status symbols
         String statusSymbol = "";
         switch (status) {

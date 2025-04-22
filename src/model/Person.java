@@ -13,6 +13,7 @@ public abstract class Person {
         this.phone = phone;
     }
 
+
     public String getId() { return id; }
     public String getName() { return name; }
     public String getAddress() { return address; }

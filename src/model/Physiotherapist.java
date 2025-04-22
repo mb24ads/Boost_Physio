@@ -20,6 +20,7 @@ public class Physiotherapist extends Person {
         treatments.add(treatment);
     }
 
+
     @Override
     public String toString() {
         return super.toString() + ", Expertise: " + String.join(", ", expertise);
