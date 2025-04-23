@@ -8,55 +8,62 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.*;
 
+
+
 public class Main {
+
+    private static final String BOLD = "\033[1m";
+    private static final String RESET = "\033[0m";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to Boost Physio Booking System!");
+        System.out.println("🌟✨ WELCOME TO BOOST PHYSIO CLINIC BOOKING SYSTEM ✨🌟");
+        System.out.println("🏥 Book, Cancel, or Manage Your Appointments with Ease! 💼🗓️");
+        System.out.println("------------------------------------------------------------");
 
         BookingManager manager = BookingManager.getInstance();
 
-        // Create a list of expertise for Helen Wright
+        // Create a list of expertise for Danial Andrew
         List<String> exp1 = Arrays.asList("Physiotherapy", "Rehabilitation");
-        // Create a new Physiotherapist for Helen Wright
-        Physiotherapist helen = new Physiotherapist("DR7890", "Helen Wright", "Barking", "0745884489", exp1);
+        // Create a new Physiotherapist for Danial Andrew
+        Physiotherapist Danial = new Physiotherapist("DR7890", "Dr.Danial Andrew", "Barking", "07345567655", exp1);
 
-        // Create a list of expertise for Mark Lee
+        // Create a list of expertise for Robert Smith
         List<String> exp2 = Arrays.asList("Osteopathy", "Massage");
-        // Create a new Physiotherapist for Mark Lee
-        Physiotherapist mark = new Physiotherapist("DR7891", "Mark Lee", "Ilford", "0722674599", exp2);
+        // Create a new Physiotherapist for Robert Smith
+        Physiotherapist Robert = new Physiotherapist("DR7891", "Dr.Robert Smith", "Ilford", "07212837388", exp2);
 
-        // Create a list of expertise for Sara Green
+        // Create a list of expertise for Kim Yung
         List<String> exp3 = Arrays.asList("Physiotherapy", "Pool rehabilitation");
-        // Create a new Physiotherapist for Sara Green
-        Physiotherapist sara = new Physiotherapist("DR7892", "Sara Green", "Kent", "0723569855", exp3);
+        // Create a new Physiotherapist for Kim Yung
+        Physiotherapist Kim = new Physiotherapist("DR7892", "Dr.Kim Yung", "Kent", "07863453288", exp3);
 
         // --- Add treatments for each physiotherapist ---
 
         LocalDateTime sharedDateTime = LocalDateTime.of(2025, 1, 3, 10, 0);
 
-        helen.addTreatment(new Treatment("Neural mobilisation",sharedDateTime, helen, generateBookingId()));
-        helen.addTreatment(new Treatment("Acupuncture", LocalDateTime.of(2025, 1, 10, 14, 0), helen, generateBookingId()));
-        mark.addTreatment(new Treatment("Massage",sharedDateTime, mark, generateBookingId()));
-        mark.addTreatment(new Treatment("Mobilisation of spine", LocalDateTime.of(2025, 1, 15, 16, 0), mark, generateBookingId()));
-        sara.addTreatment(new Treatment("Pool rehabilitation", LocalDateTime.of(2025, 1, 8, 9, 0), sara, generateBookingId()));
-        sara.addTreatment(new Treatment("Physiotherapy", LocalDateTime.of(2025, 1, 22, 13, 0), sara, generateBookingId()));
+        Danial.addTreatment(new Treatment("Neural mobilisation",sharedDateTime, Danial, generateBookingId()));
+        Danial.addTreatment(new Treatment("Acupuncture", LocalDateTime.of(2025, 1, 10, 14, 0), Danial, generateBookingId()));
+        Robert.addTreatment(new Treatment("Massage",sharedDateTime, Robert, generateBookingId()));
+        Robert.addTreatment(new Treatment("Mobilisation of spine", LocalDateTime.of(2025, 1, 15, 16, 0), Robert, generateBookingId()));
+        Kim.addTreatment(new Treatment("Pool rehabilitation", LocalDateTime.of(2025, 1, 8, 9, 0), Kim, generateBookingId()));
+        Kim.addTreatment(new Treatment("Physiotherapy", LocalDateTime.of(2025, 1, 22, 13, 0), Kim, generateBookingId()));
 
-        // --- Register physiotherapists with the system ---
-        manager.addPhysiotherapist(helen);
-        manager.addPhysiotherapist(mark);
-        manager.addPhysiotherapist(sara);
+        //  Register physiotherapists with the system
+        manager.addPhysiotherapist(Danial);
+        manager.addPhysiotherapist(Robert);
+        manager.addPhysiotherapist(Kim);
 
 
 
         // Add sample patients
-        manager.addPatient(new Patient("P001", "Alice Smith", "25 Glencoe Street", "07245689644"));
-        manager.addPatient(new Patient("P002", "Bob Johnson", "67 WestBury Road", "07345678822"));
-        manager.addPatient(new Patient("P003", "Charlie Evans", "78 Elizbeth’s Ave", "07875634566"));
-        manager.addPatient(new Patient("P004", "Diana Moore", "34 Commet Street", "07239856844"));
-        manager.addPatient(new Patient("P005", "Ethan Brown", "76 Laker Lane", "07998563212"));
+        manager.addPatient(new Patient("P0001", "David Wilson", "25 Glencoe Street", "07245689644"));
+        manager.addPatient(new Patient("P0002", "Emily Yung", "67 WestBury Road", "07345678822"));
+        manager.addPatient(new Patient("P0003", "Michael Brown", "78 Elizbeth’s Ave", "07875634566"));
+        manager.addPatient(new Patient("P0004", "Jane Doe", "34 Commet Street", "07239856844"));
+        manager.addPatient(new Patient("P0005", "John Smith", "76 Lakers Lane", "07998563212"));
 
-        // --- Confirm it worked ---
+        // Confirm it worked
         System.out.println("\n--- Registered Patients ---");
         for (Patient p : manager.getAllPatients()) {
             System.out.println(p);
@@ -71,18 +78,39 @@ public class Main {
         }
 
         while (true) {
-            System.out.println("\n----------   Boost Physio Clinic (BPC) Booking System   ---------");
-            System.out.println("(1) Add Patient");
-            System.out.println("(2) Remove Patient");
-            System.out.println("(3) View Patients");
-            System.out.println("(4) View Physiotherapists & Treatments");
-            System.out.println("(5) Book Treatment by Physiotherapist");
-            System.out.println("(6) Book Treatment by Expertise");
-            System.out.println("(7) Cancel Treatment");
-            System.out.println("(8) Attend Appointment");
-            System.out.println("(9) Print final report");
-            System.out.println("(0) Exit");
-            System.out.print("Select an option: ");
+
+            // Clean header with section lines for clarity
+            System.out.println("────────────────────────────────────────────────────────────────────────");
+            System.out.println("                   🌟 BOOST PHYSIO CLINIC 🌟                             ");
+            System.out.println("               Our Mission 🏥 || Keep Healty 💪         ");
+            System.out.println("────────────────────────────────────────────────────────────────────────");
+            System.out.println("                           MAIN MENU 📋                                 ");
+            System.out.println("────────────────────────────────────────────────────────────────────────");
+
+// Using printf for aligned options with padding and consistent length
+            System.out.printf("  (1)   🆕 %-30s \n", "New Entry");
+            System.out.printf("  (2)   🗑️ %-30s \n", "Delete Record");
+            System.out.printf("  (3)   📊 %-30s \n", "Overview");
+            System.out.printf("  (4)   ℹ️ %-30s ️\n", "Services Info");
+            System.out.printf("  (5)   📅 %-30s \n", "Direct Booking");
+            System.out.printf("  (6)   🤖 %-30s \n", "Match Needs");
+            System.out.printf("  (7)   🔧 %-30s ️\n", "Manage Booking");
+            System.out.printf("  (8)   ✅ %-30s \n", "Mark Attended");
+            System.out.printf("  (9)   📑 %-30s \n", "Summary Report");
+            System.out.printf("  (0)   ❌ %-30s \n", "Close Program");
+
+// Section separator for improved clarity
+          //  System.out.println("────────────────────────────────────────────────────────────────────────");
+            System.out.println("🔹 Please select an option by entering the corresponding number: 🔹");
+          //  System.out.println("────────────────────────────────────────────────────────────────────────");
+
+// Spacing for user input visibility
+          //  System.out.println("\n────────────────────────────────────────────────────────────────────────");
+            System.out.print("Enter your option: ");
+           // System.out.println("────────────────────────────────────────────────────────────────────────");
+
+
+// Optional: This can be followed by a logic to handle user input and selections.
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // consume newline
@@ -154,13 +182,6 @@ public class Main {
                     scanner.nextLine();  // consume newline
                     if (sel >= 1 && sel <= available.size()) {
                         Treatment selectedTreatment = available.get(sel - 1);
-
-                       /* if (selectedTreatment.getStatus() == AppointmentStatus.AVAILABLE) {
-                            selectedTreatment.book(patient);
-                            System.out.println("Appointment booked successfully.");
-                        }*/
-
-                        /// //////
                         boolean hasConflict = false;
                         for (Physiotherapist physio : manager.getAllPhysiotherapists()) {
                             for (Treatment booked : physio.getTreatments()) {
@@ -178,16 +199,11 @@ public class Main {
                             selectedTreatment.book(patient);
                             System.out.println("Appointment Booked Successfully.");
                         }
-
-                    /// ///////
-
-                       // else {
-                       //     System.out.println("This treatment is already booked.");
-                       // }
                     } else {
                         System.out.println("Invalid selection.");
                     }
                     break;
+
                 case 6:
                     System.out.print("Enter Patient's ID: ");
                     String patientIdExp = scanner.nextLine();
@@ -232,10 +248,6 @@ public class Main {
                     }
 
                     Treatment selected = availableTreatments.get(treatmentIndex);
-                  //  selected.book(patientExp);
-                  //  System.out.println("Treatment booked successfully.");
-                    /// ////
-
                     boolean conflict = false;
                     for (Physiotherapist physio : manager.getAllPhysiotherapists()) {
                         for (Treatment t : physio.getTreatments()) {
@@ -253,19 +265,18 @@ public class Main {
                         selected.book(patientExp);
                         System.out.println("Treatment Booked Successfully.");
                     }
-
-                    /// ///
                     break;
 
                 case 7:
-                    System.out.print("Enter your Patient 's ID: ");
+                    System.out.print("Enter your Patient's ID: ");
                     String cancelId = scanner.nextLine();
                     Patient pUser = manager.findPatientById(cancelId);
                     if (pUser == null) {
-                        System.out.println("Patient not found !");
+                        System.out.println("Patient not found!");
                         break;
                     }
 
+                    // Get booked treatments for the patient
                     List<Treatment> bookedTreatments = new ArrayList<>();
                     for (Physiotherapist physio : manager.getAllPhysiotherapists()) {
                         for (Treatment t : physio.getTreatments()) {
@@ -276,7 +287,7 @@ public class Main {
                     }
 
                     if (bookedTreatments.isEmpty()) {
-                        System.out.println("You have no booked appointments !");
+                        System.out.println("You have no booked appointments!");
                         break;
                     }
 
@@ -298,40 +309,46 @@ public class Main {
                     String action = scanner.nextLine().trim().toLowerCase();
 
                     if (action.equals("c") || action.equals("cancel")) {
-                        // Ensure the patient is not null before calling getName()
+                        // Ensure patient is not null before calling getName()
                         if (oldTreatment.getPatient() != null) {
-                            String patientName = oldTreatment.getPatient().getName(); // Store it before canceling
+                            String patientName = oldTreatment.getPatient().getName();  // Store name before canceling
                             oldTreatment.cancel(pUser);  // Pass the patient who is canceling the treatment
-                            oldTreatment.setStatus(AppointmentStatus.AVAILABLE);  // Release the appointment
+                            oldTreatment.setStatus(AppointmentStatus.AVAILABLE);  // Release the appointment slot
 
+                            // Record the canceled treatment for history tracking
                             CanceledTreatmentRecord canceled = new CanceledTreatmentRecord(
                                     oldTreatment.getName(),
                                     oldTreatment.getPhysiotherapist().getName(),
-                                    patientName,  // Use the stored name
+                                    patientName,  // Use stored patient name
                                     pUser.getName(),
                                     oldTreatment.getDateTime()
                             );
                             manager.getCanceledTreatments().add(canceled);
-                            System.out.println("Booking cancelled for " + patientName);  // <-- Your custom message
+                            System.out.println("Booking cancelled for " + patientName);  // Custom success message
                         } else {
-                            System.out.println("Unable To Cancel The Treatment: No Patient Associated !");
+                            System.out.println("Unable to cancel the treatment: No patient associated!");
                         }
                     }
 
                     else if (action.equals("change")) {
-                        // Cancel the old appointment
+                        // Capture patient name before canceling
+                        String patientName = oldTreatment.getPatient() != null ? oldTreatment.getPatient().getName() : "N/A";
+
+                    // Cancel the old appointment
                         oldTreatment.cancel(pUser);
                         oldTreatment.setStatus(AppointmentStatus.AVAILABLE);
+
+                    // Record the canceled treatment for history tracking
                         CanceledTreatmentRecord canceled = new CanceledTreatmentRecord(
                                 oldTreatment.getName(),
                                 oldTreatment.getPhysiotherapist().getName(),
-                                oldTreatment.getPatient() != null ? oldTreatment.getPatient().getName() : "N/A",
+                                patientName,
                                 pUser.getName(),
                                 oldTreatment.getDateTime()
                         );
                         manager.getCanceledTreatments().add(canceled);
 
-                        System.out.println("Appointment Cancelled : Please Choose a New Appointment to Book.");
+                        System.out.println("Appointment cancelled. Please choose a new appointment to book.");
 
                         // Rebooking flow (same as case 5 or 6 - simplified version here)
                         List<Treatment> allAvailable = new ArrayList<>();
@@ -344,7 +361,7 @@ public class Main {
                         }
 
                         if (allAvailable.isEmpty()) {
-                            System.out.println("No Available Appointments at this Time !");
+                            System.out.println("No available appointments at this time!");
                             break;
                         }
 
@@ -353,16 +370,16 @@ public class Main {
                             System.out.println((i + 1) + ". " + allAvailable.get(i));
                         }
 
-                        System.out.print("Select a New Appointment (Number): ");
+                        System.out.print("Select a new appointment (Number): ");
                         int newIndex = Integer.parseInt(scanner.nextLine()) - 1;
                         if (newIndex < 0 || newIndex >= allAvailable.size()) {
-                            System.out.println("Invalid Selection.");
+                            System.out.println("Invalid selection.");
                             break;
                         }
 
                         Treatment newTreatment = allAvailable.get(newIndex);
 
-                        // Check for conflict
+                        // Check for conflicts
                         boolean conflicts = false;
                         for (Physiotherapist physio : manager.getAllPhysiotherapists()) {
                             for (Treatment t : physio.getTreatments()) {
@@ -375,14 +392,15 @@ public class Main {
                         }
 
                         if (conflicts) {
-                            System.out.println("Booking Conflict: You Already ave an Appointment at this Time.");
+                            System.out.println("Booking conflict: You already have an appointment at this time.");
                         } else {
                             newTreatment.book(pUser);
-                            System.out.println("Appointment Successfully Rebooked.");
+                            System.out.println("Appointment successfully rebooked.");
                         }
                     }
 
                     break;
+
 
                 case 8:
                     System.out.print("Enter your Patient's ID: ");
@@ -421,7 +439,7 @@ public class Main {
                     }
 
                     bookedList.get(attendIndex).attend();
-                    System.out.println("Appointment Marked as Attended.");
+                    System.out.println("Appointment Roberted as Attended.");
                     break;
 
                 case 9:
@@ -520,15 +538,4 @@ public class Main {
     public static String generateBookingId() {
         return UUID.randomUUID().toString().substring(0,4);  // This generates a unique ID based on UUID
     }
-    //}
-
-    /*public static String generateBookingId() {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        SecureRandom random = new SecureRandom();
-        StringBuilder sb = new StringBuilder(8);  // Set the length to 8 characters
-        for (int i = 0; i < 8; i++) {
-            sb.append(characters.charAt(random.nextInt(characters.length())));
-        }
-        return sb.toString().substring(0,4);
-    }*/
 }

@@ -52,7 +52,7 @@ public class Treatment {
             System.out.println("This treatment is already booked or unavailable.");
             return;
         }
-        this.status = AppointmentStatus.BOOKED; // Mark as booked
+        this.status = AppointmentStatus.BOOKED; // Robert as booked
         this.patient = patient; // Assign the patient
         System.out.println("Treatment booked successfully for " + patient.getName());
     }
@@ -61,7 +61,7 @@ public class Treatment {
     public void cancel(Patient cancelingPatient) {
         if (this.patient != null && this.patient.equals(cancelingPatient)) {
             this.patient = null; // Free up the slot
-            this.status = AppointmentStatus.CANCELLED; // Mark as canceled
+            this.status = AppointmentStatus.CANCELLED; // Robert as canceled
             this.canceledBy = cancelingPatient.getName(); // Track who canceled the treatment
             System.out.println("Treatment canceled by " + cancelingPatient.getName());
         } else {
@@ -78,13 +78,6 @@ public class Treatment {
         }
     }
 
-    // toString method for treatment details
-  //  @Override
-  //  public String toString() {
-  //      return String.format("%s at %s [%s] by %s (Booking ID: %s)", name, dateTime, status, physiotherapist.getName(), bookingId);
-  //  }
-
-
     @Override
     public String toString() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d MMMM yyyy");
@@ -94,9 +87,7 @@ public class Treatment {
         String endTime = dateTime.plusHours(1).format(timeFormatter); // Assuming 1-hour treatment
         String formattedDate = dateTime.format(dateFormatter);
 
-
-        // Define status symbols
-        String statusSymbol = "";
+        String statusSymbol;
         switch (status) {
             case AVAILABLE:
                 statusSymbol = "🟢 AVAILABLE";
@@ -114,15 +105,17 @@ public class Treatment {
                 statusSymbol = "❓ Unknown";
         }
 
-        return String.format("%s - %s, %s-%s [%s] by %s (Booking ID: %s)",
+        return String.format("%s - %s, %s %s-%s by %s (Booking ID: %s)",
                 statusSymbol,
                 name,
                 formattedDate,
                 startTime,
                 endTime,
-                status,
                 physiotherapist.getName(),
                 bookingId
         );
     }
+
+
+
 }
