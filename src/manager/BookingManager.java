@@ -23,6 +23,8 @@ public class BookingManager {
         canceledTreatments = new ArrayList<>();
     }
 
+
+
     public static BookingManager getInstance() {
         if (instance == null) {
             instance = new BookingManager();
@@ -228,4 +230,6 @@ public class BookingManager {
     public boolean isBookingIdUsed(String bookingId) {
         return usedBookingIds.contains(bookingId);
     }
+
+
 }
